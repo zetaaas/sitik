@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Платформа гражданского надзора",
+    "logout": "Выйти",
+    "language": "Язык",
+    "loading": "Загрузка...",
+    "offline": "Вы офлайн. Некоторые функции недоступны."
+  },
+  "auth": {
+    "login": "Вход",
+    "register": "Регистрация",
+    "email": "Email",
+    "password": "Пароль",
+    "name": "Имя",
+    "submit": "Отправить",
+    "pendingNotice": "Ваш статус ожидает подтверждения модератором.",
+    "volunteerPending": "Волонтеры со статусом pending не могут публиковать контент."
+  },
+  "navigation": {
+    "dashboard": "Дашборд",
+    "projects": "Проекты",
+    "moderation": "Модерация",
+    "users": "Пользователи",
+    "files": "Файлы",
+    "live": "Live-сессии",
+    "analytics": "Аналитика"
+  },
+  "dashboard": {
+    "pendingVolunteers": "Ожидающие волонтеры",
+    "moderationQueue": "Очередь модерации",
+    "upcomingLive": "Ближайшие live-сессии"
+  },
+  "projects": {
+    "mapTitle": "Карта проектов",
+    "stages": "Стадии проекта",
+    "suggestChange": "Предложить изменение",
+    "draftPlaceholder": "Опишите предлагаемое изменение...",
+    "submitDraft": "Отправить на модерацию",
+    "selectProject": "Выберите проект на карте",
+    "selectLabel": "Проект"
+  },
+  "files": {
+    "title": "Файлы",
+    "upload": "Загрузить файл",
+    "select": "Выберите PDF/JPG/PNG",
+    "quarantine": "Файл в карантине",
+    "selectProjectPrompt": "Выберите проект для просмотра файлов",
+    "uploadError": "Не удалось загрузить файл"
+  },
+  "live": {
+    "title": "Live-сессии",
+    "join": "Подключиться",
+    "qaTab": "Вопросы",
+    "ask": "Задать вопрос",
+    "questionPlaceholder": "Ваш вопрос...",
+    "pending": "В ожидании подтверждения",
+    "approved": "Одобренные вопросы",
+    "sessions": "Сессии",
+    "tasks": "Задачи",
+    "taskTitle": "Название задачи",
+    "taskDescription": "Описание задачи",
+    "createTask": "Создать задачу"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "downloadPdf": "Скачать PDF",
+    "downloadExcel": "Скачать Excel",
+    "auditLog": "Журнал действий",
+    "time": "Время",
+    "user": "Пользователь",
+    "action": "Действие",
+    "entity": "Сущность",
+    "projects": "Проекты",
+    "stages": "Стадии",
+    "live": "Live",
+    "kpiLabel": "KPI",
+    "kpiHeading": "Основные показатели"
+  },
+  "moderation": {
+    "action": "Действие",
+    "reason": "Причина",
+    "approve": "Одобрить",
+    "reject": "Отклонить",
+    "return": "Вернуть",
+    "selectItem": "Выберите элемент"
+  },
+  "users": {
+    "email": "Email",
+    "role": "Роль",
+    "status": "Статус",
+    "actions": "Действия",
+    "createdAt": "Создан"
+  }
+}

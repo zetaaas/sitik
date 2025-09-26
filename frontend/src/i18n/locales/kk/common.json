@@ -1,0 +1,94 @@
+{
+  "app": {
+    "title": "Азаматтық бақылау платформасы",
+    "logout": "Шығу",
+    "language": "Тіл",
+    "loading": "Жүктелуде...",
+    "offline": "Сіз офлайн режимдесіз. Кейбір мүмкіндіктер қолжетімсіз."
+  },
+  "auth": {
+    "login": "Кіру",
+    "register": "Тіркелу",
+    "email": "Email",
+    "password": "Құпия сөз",
+    "name": "Аты",
+    "submit": "Жіберу",
+    "pendingNotice": "Статусыңыз модератордың мақұлдауын күтуде.",
+    "volunteerPending": "Pending мәртебесіндегі волонтерлер жариялай алмайды."
+  },
+  "navigation": {
+    "dashboard": "Дашборд",
+    "projects": "Жобалар",
+    "moderation": "Модерация",
+    "users": "Пайдаланушылар",
+    "files": "Файлдар",
+    "live": "Live-сессиялар",
+    "analytics": "Аналитика"
+  },
+  "dashboard": {
+    "pendingVolunteers": "Күтудегі волонтерлер",
+    "moderationQueue": "Модерация кезегі",
+    "upcomingLive": "Алдағы live-сессиялар"
+  },
+  "projects": {
+    "mapTitle": "Жобалар картасы",
+    "stages": "Жоба кезеңдері",
+    "suggestChange": "Өзгеріс ұсыну",
+    "draftPlaceholder": "Ұсынылған өзгерісті сипаттаңыз...",
+    "submitDraft": "Модерацияға жіберу",
+    "selectProject": "Картадан жобаны таңдаңыз",
+    "selectLabel": "Жоба"
+  },
+  "files": {
+    "title": "Файлдар",
+    "upload": "Файл жүктеу",
+    "select": "PDF/JPG/PNG таңдаңыз",
+    "quarantine": "Файл карантинде",
+    "selectProjectPrompt": "Файлдарды көру үшін жобаны таңдаңыз",
+    "uploadError": "Жүктеу сәтсіз"
+  },
+  "live": {
+    "title": "Live-сессиялар",
+    "join": "Қосылу",
+    "qaTab": "Сұрақтар",
+    "ask": "Сұрақ қою",
+    "questionPlaceholder": "Сұрағыңызды жазыңыз...",
+    "pending": "Мақұлдауды күтуде",
+    "approved": "Мақұлданған сұрақтар",
+    "sessions": "Сессиялар",
+    "tasks": "Тапсырмалар",
+    "taskTitle": "Тапсырма атауы",
+    "taskDescription": "Тапсырма сипаттамасы",
+    "createTask": "Тапсырма құру"
+  },
+  "analytics": {
+    "title": "Аналитика",
+    "downloadPdf": "PDF жүктеу",
+    "downloadExcel": "Excel жүктеу",
+    "auditLog": "Әрекеттер журналы",
+    "time": "Уақыты",
+    "user": "Пайдаланушы",
+    "action": "Әрекет",
+    "entity": "Нысан",
+    "projects": "Жобалар",
+    "stages": "Кезеңдер",
+    "live": "Live",
+    "kpiLabel": "KPI",
+    "kpiHeading": "Негізгі көрсеткіштер"
+  },
+  "moderation": {
+    "action": "Әрекет",
+    "reason": "Себебі",
+    "approve": "Мақұлдау",
+    "reject": "Бас тарту",
+    "return": "Қайтару",
+    "selectItem": "Элементті таңдаңыз"
+  },
+  "users": {
+    "email": "Email",
+    "role": "Рөлі",
+    "status": "Мәртебе",
+    "actions": "Әрекеттер",
+    "createdAt": "Құрылған"
+  }
+}

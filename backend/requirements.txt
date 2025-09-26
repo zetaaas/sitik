@@ -1,0 +1,17 @@
+fastapi
+uvicorn[standard]
+sqlalchemy>=1.4
+alembic
+psycopg2-binary
+geoalchemy2
+python-multipart
+passlib[bcrypt]
+python-jose[cryptography]
+slowapi
+celery[redis]
+redis
+boto3
+reportlab
+xlsxwriter
+Pillow
+cryptography
