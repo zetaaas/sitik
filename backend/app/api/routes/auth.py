@@ -1,3 +1,4 @@
+ codex/create-backend-for-civil-oversight-platform
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
@@ -32,11 +33,26 @@ def mask_phone(phone_number: str) -> str:
             masked.append(char)
     return "".join(masked)
 
+
+from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+
+from app.api.deps import get_db_session
+from app.core.security import create_access_token, verify_password, get_password_hash
+from app.models.user import User, UserRole, VolunteerStatus
+from app.schemas.auth import Token
+from app.schemas.user import UserCreate, UserResponse
+from app.services.audit import create_audit_log
+from app.utils.iin import encrypt_iin, hash_iin
+
+ CODEXX
 router = APIRouter(prefix="/auth", tags=["auth"])
 
 
 @router.post("/register", response_model=UserResponse)
 def register(user_in: UserCreate, db: Session = Depends(get_db_session)) -> User:
+ codex/create-backend-for-civil-oversight-platform
     if user_in.password != user_in.password_confirm:
         raise HTTPException(status_code=400, detail="Пароли не совпадают")
 
@@ -54,6 +70,14 @@ def register(user_in: UserCreate, db: Session = Depends(get_db_session)) -> User
         email=user_in.email,
         full_name=user_in.full_name,
         phone_number=user_in.phone_number,
+
+    existing = db.query(User).filter(User.email == user_in.email).first()
+    if existing:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    user = User(
+        email=user_in.email,
+        full_name=user_in.full_name,
+CODEXX
         hashed_password=get_password_hash(user_in.password),
         role=UserRole.volunteer,
         volunteer_status=VolunteerStatus.pending,
@@ -70,6 +94,7 @@ def register(user_in: UserCreate, db: Session = Depends(get_db_session)) -> User
     return user
 
 
+codex/create-backend-for-civil-oversight-platform
 @router.post("/login", response_model=LoginChallenge)
 def login(
     payload: LoginRequest,
@@ -136,3 +161,16 @@ def verify_twofa(
 @router.get("/me", response_model=UserResponse)
 def read_current_user(current_user: User = Depends(get_current_user)) -> User:
     return current_user
+
+@router.post("/token", response_model=Token)
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db_session)) -> Token:
+    user = db.query(User).filter(User.email == form_data.username).first()
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
+    if not verify_password(form_data.password, user.hashed_password):
+        raise HTTPException(status_code=400, detail="Incorrect email or password")
+    if user.role == UserRole.volunteer and user.volunteer_status != VolunteerStatus.approved:
+        raise HTTPException(status_code=403, detail="Volunteer pending approval")
+    access_token = create_access_token(subject=str(user.id))
+    create_audit_log(db, user.id, "login", "user", None)
+CODEXX
