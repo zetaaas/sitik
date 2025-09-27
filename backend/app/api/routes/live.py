@@ -7,7 +7,10 @@ from app.models.moderation import ModerationItem, ModerationTarget
 from app.models.user import User, UserRole
 from app.schemas.live import (
     LiveQuestionCreate,
+ codex/create-backend-for-civil-oversight-platform
     LiveQuestionModeration,
+
+ CODEXX
     LiveQuestionResponse,
     LiveSessionCreate,
     LiveSessionResponse,
@@ -44,6 +47,7 @@ def list_sessions(db: Session = Depends(get_db_session)):
     return db.query(LiveSession).all()
 
 
+ codex/create-backend-for-civil-oversight-platform
 @router.get("/sessions/{session_id}", response_model=LiveSessionResponse)
 def get_session(session_id: int, db: Session = Depends(get_db_session)):
     session = db.query(LiveSession).get(session_id)
@@ -76,6 +80,8 @@ def list_session_tasks(
     return query.order_by(LiveTask.created_at.desc()).all()
 
 
+
+ CODEXX
 @router.post("/questions", response_model=LiveQuestionResponse)
 def ask_question(
     question_in: LiveQuestionCreate,
@@ -117,7 +123,7 @@ def approve_question(
     create_audit_log(db, current_user.id, "approve_question", f"live_question:{question.id}", None)
     return question
 
-
+codex/create-backend-for-civil-oversight-platform
 @router.post("/questions/{question_id}/reject", response_model=LiveQuestionResponse)
 def reject_question(
     question_id: int,
@@ -135,7 +141,7 @@ def reject_question(
     create_audit_log(db, current_user.id, "reject_question", f"live_question:{question.id}", moderation.json())
     return question
 
-
+ CODEXX
 @router.post("/tasks", response_model=LiveTaskResponse)
 def create_task(
     task_in: LiveTaskCreate,

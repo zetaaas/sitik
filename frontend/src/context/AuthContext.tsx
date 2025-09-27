@@ -6,15 +6,18 @@ import {
   useMemo,
   useState,
 } from 'react';
+import axios from 'axios';
 import { useQueryClient } from '@tanstack/react-query';
 
 import type { User } from '@/lib/types';
 import {
   fetchCurrentUser,
+  LoginChallenge,
   loginRequest,
   registerRequest,
   RegisterPayload,
   setAuthToken,
+  verifyTwoFactorRequest,
 } from '@/lib/api';
 
 interface AuthContextValue {
@@ -22,9 +25,18 @@ interface AuthContextValue {
   token: string | null;
   loading: boolean;
   login: (email: string, password: string) => Promise<void>;
+  verifyTwoFactor: (challengeId: string, code: string) => Promise<void>;
+  twoFactorChallenge: TwoFactorChallenge | null;
   register: (payload: RegisterPayload) => Promise<User>;
   logout: () => void;
   error: string | null;
+}
+
+interface TwoFactorChallenge {
+  challengeId: string;
+  maskedPhone: string;
+  expiresIn: number;
+  email: string;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -36,7 +48,18 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   );
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [twoFactorChallenge, setTwoFactorChallenge] = useState<TwoFactorChallenge | null>(null);
   const queryClient = useQueryClient();
+
+  const extractErrorMessage = useCallback((err: unknown) => {
+    if (axios.isAxiosError(err)) {
+      const detail = err.response?.data?.detail;
+      if (typeof detail === 'string') {
+        return detail;
+      }
+    }
+    return 'Ошибка аутентификации';
+  }, []);
 
   const loadUser = useCallback(async () => {
     if (!token) {
@@ -67,24 +90,49 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     async (email: string, password: string) => {
       setLoading(true);
       setError(null);
+      setToken(null);
+      setAuthToken(null);
+      setUser(null);
       try {
-        const accessToken = await loginRequest(email, password);
-        setToken(accessToken);
-        setAuthToken(accessToken);
-        const data = await fetchCurrentUser();
-        setUser(data);
+        const challenge: LoginChallenge = await loginRequest(email, password);
+        setTwoFactorChallenge({
+          challengeId: challenge.challenge_id,
+          maskedPhone: challenge.masked_phone,
+          expiresIn: challenge.expires_in,
+          email,
+        });
       } catch (err) {
         console.error(err);
-        setError('Authentication failed');
-        setToken(null);
-        setAuthToken(null);
-        setUser(null);
+        setError(extractErrorMessage(err));
+        setTwoFactorChallenge(null);
         throw err;
       } finally {
         setLoading(false);
       }
     },
-    [],
+    [extractErrorMessage],
+  );
+
+  const verifyTwoFactor = useCallback(
+    async (challengeId: string, code: string) => {
+      setLoading(true);
+      setError(null);
+      try {
+        const accessToken = await verifyTwoFactorRequest(challengeId, code);
+        setToken(accessToken);
+        setAuthToken(accessToken);
+        const data = await fetchCurrentUser();
+        setUser(data);
+        setTwoFactorChallenge(null);
+      } catch (err) {
+        console.error(err);
+        setError(extractErrorMessage(err));
+        throw err;
+      } finally {
+        setLoading(false);
+      }
+    },
+    [extractErrorMessage],
   );
 
   const register = useCallback(async (payload: RegisterPayload) => {
@@ -96,12 +144,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     setUser(null);
     setAuthToken(null);
+    setTwoFactorChallenge(null);
+    setError(null);
     queryClient.clear();
   }, [queryClient]);
 
   const value = useMemo(
-    () => ({ user, token, loading, login, register, logout, error }),
-    [user, token, loading, login, register, logout, error],
+    () => ({ user, token, loading, login, verifyTwoFactor, twoFactorChallenge, register, logout, error }),
+    [user, token, loading, login, verifyTwoFactor, twoFactorChallenge, register, logout, error],
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

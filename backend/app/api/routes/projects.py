@@ -5,7 +5,10 @@ from geoalchemy2 import WKTElement
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
+ codex/create-backend-for-civil-oversight-platform
 from app.api.deps import get_db_session, require_role
+
+ CODEXX
 from app.models.moderation import ModerationItem, ModerationTarget
 from app.models.project import Project, ProjectFile, ProjectStage, ProjectStatus, StageStatus
 from app.models.user import User, UserRole
@@ -38,7 +41,7 @@ def list_projects(
         query = query.filter(func.ST_Within(Project.geo_point, envelope))
     return query.all()
 
-
+codex/create-backend-for-civil-oversight-platform
 @router.get("/{project_id}", response_model=ProjectResponse)
 def get_project(project_id: int, db: Session = Depends(get_db_session)):
     project = db.query(Project).get(project_id)
@@ -49,6 +52,7 @@ def get_project(project_id: int, db: Session = Depends(get_db_session)):
     return project
 
 
+CODEXX
 @router.post("", response_model=ProjectResponse)
 def create_project(
     project_in: ProjectCreate,
@@ -103,6 +107,7 @@ def create_stage(
     return stage
 
 
+ codex/create-backend-for-civil-oversight-platform
 @router.get("/{project_id}/stages", response_model=List[ProjectStageResponse])
 def list_project_stages(
     project_id: int,
@@ -118,6 +123,7 @@ def list_project_stages(
     return query.order_by(ProjectStage.created_at.desc()).all()
 
 
+CODEXX
 @router.post("/{project_id}/files", response_model=ProjectFileResponse)
 def upload_file(
     project_id: int,
@@ -150,6 +156,7 @@ def upload_file(
         generate_thumbnail_task.delay(project_file.id)
     create_audit_log(db, current_user.id, "upload_file", f"project_file:{project_file.id}", None)
     return project_file
+ codex/create-backend-for-civil-oversight-platform
 
 
 @router.get("/{project_id}/files", response_model=List[ProjectFileResponse])
@@ -165,3 +172,4 @@ def list_project_files(
     if not current_user.can_access_role(UserRole.moderator) and project.owner_id != current_user.id:
         query = query.filter(ProjectFile.quarantine.is_(False))
     return query.order_by(ProjectFile.created_at.desc()).all()
+ CODEXX

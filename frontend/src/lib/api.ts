@@ -42,19 +42,22 @@ export const setAuthToken = (token: string | null) => {
   }
 };
 
+export interface LoginChallenge {
+  challenge_id: string;
+  expires_in: number;
+  masked_phone: string;
+}
+
 export const loginRequest = async (email: string, password: string) => {
-  const body = new URLSearchParams();
-  body.append('username', email);
-  body.append('password', password);
-  const { data } = await api.post<{ access_token: string }>('/auth/token', body, {
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-  });
-  return data.access_token;
+  const { data } = await api.post<LoginChallenge>('/auth/login', { email, password });
+  return data;
 };
 
 export interface RegisterPayload {
   email: string;
   password: string;
+  password_confirm: string;
+  phone_number: string;
   full_name?: string;
   iin?: string;
 }
@@ -62,6 +65,14 @@ export interface RegisterPayload {
 export const registerRequest = async (payload: RegisterPayload) => {
   const { data } = await api.post<User>('/auth/register', payload);
   return data;
+};
+
+export const verifyTwoFactorRequest = async (challengeId: string, code: string) => {
+  const { data } = await api.post<{ access_token: string }>('/auth/verify-2fa', {
+    challenge_id: challengeId,
+    code,
+  });
+  return data.access_token;
 };
 
 export const fetchCurrentUser = async () => {

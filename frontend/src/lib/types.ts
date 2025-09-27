@@ -5,6 +5,7 @@ export interface User {
   id: number;
   email: string;
   full_name?: string | null;
+  phone_number?: string | null;
   role: UserRole;
   volunteer_status: VolunteerStatus;
   is_active: boolean;
