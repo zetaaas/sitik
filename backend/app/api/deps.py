@@ -1,9 +1,9 @@
 from typing import Generator, Optional
-from typing import Generator
 
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from redis import Redis
 from sqlalchemy.orm import Session
 
 from app.core.config import get_settings
@@ -11,11 +11,20 @@ from app.core.security import ALGORITHM
 from app.db.session import get_db
 from app.models.user import User, UserRole, VolunteerStatus
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/verify-2fa")
 
 
 def get_db_session() -> Generator:
     yield from get_db()
+
+
+def get_redis() -> Generator[Redis, None, None]:
+    settings = get_settings()
+    client = Redis.from_url(settings.redis_url, decode_responses=True)
+    try:
+        yield client
+    finally:
+        client.close()
 
 
 def get_current_user(db: Session = Depends(get_db_session), token: str = Depends(oauth2_scheme)) -> User:
@@ -36,7 +45,7 @@ def get_current_user(db: Session = Depends(get_db_session), token: str = Depends
     if user is None:
         raise credentials_exception
     if user.role == UserRole.volunteer and user.volunteer_status != VolunteerStatus.approved:
-        raise HTTPException(status_code=403, detail="Volunteer pending approval")
+        raise HTTPException(status_code=403, detail="Волонтер ожидает подтверждения")
     return user
 
 

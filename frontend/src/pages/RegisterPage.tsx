@@ -1,11 +1,16 @@
+import axios from 'axios';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 import { useAuth } from '@/context/AuthContext';
 
 interface RegisterForm {
   email: string;
   password: string;
+  password_confirm: string;
+  phone_number: string;
   full_name?: string;
   iin?: string;
 }
@@ -13,16 +18,33 @@ interface RegisterForm {
 export const RegisterPage = () => {
   const { t } = useTranslation();
   const { register: registerUser } = useAuth();
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<boolean>(false);
   const {
     register,
     handleSubmit,
     reset,
-    formState: { errors, isSubmitSuccessful, isSubmitting },
-  } = useForm<RegisterForm>({ defaultValues: { email: '', password: '', full_name: '', iin: '' } });
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterForm>({
+    defaultValues: { email: '', password: '', password_confirm: '', phone_number: '', full_name: '', iin: '' },
+  });
 
   const onSubmit = async (values: RegisterForm) => {
-    await registerUser(values);
-    reset();
+    setServerError(null);
+    setSuccess(false);
+    if (values.password !== values.password_confirm) {
+      setError('password_confirm', { type: 'validate', message: t('auth.passwordMismatch') });
+      return;
+    }
+    try {
+      await registerUser(values);
+      setSuccess(true);
+      reset({ email: '', password: '', password_confirm: '', phone_number: '', full_name: '', iin: '' });
+    } catch (err) {
+      const detail = axios.isAxiosError(err) ? err.response?.data?.detail : null;
+      setServerError(typeof detail === 'string' ? detail : t('auth.registrationFailed'));
+    }
   };
 
   return (
@@ -32,12 +54,34 @@ export const RegisterPage = () => {
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">{t('auth.email')}</label>
           <input type="email" className="w-full rounded-md border px-3 py-2" {...register('email', { required: true })} />
-          {errors.email && <p className="mt-1 text-xs text-red-500">{t('auth.email')} required</p>}
+          {errors.email && <p className="mt-1 text-xs text-red-500">{`${t('auth.email')} ${t('auth.required')}`}</p>}
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">{t('auth.password')}</label>
           <input type="password" className="w-full rounded-md border px-3 py-2" {...register('password', { required: true })} />
-          {errors.password && <p className="mt-1 text-xs text-red-500">{t('auth.password')} required</p>}
+          {errors.password && <p className="mt-1 text-xs text-red-500">{`${t('auth.password')} ${t('auth.required')}`}</p>}
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">{t('auth.confirmPassword')}</label>
+          <input
+            type="password"
+            className="w-full rounded-md border px-3 py-2"
+            {...register('password_confirm', { required: true })}
+          />
+          {errors.password_confirm && (
+            <p className="mt-1 text-xs text-red-500">
+              {errors.password_confirm.message ?? t('auth.confirmPasswordRequired')}
+            </p>
+          )}
+        </div>
+        <div>
+          <label className="mb-1 block text-sm font-medium text-gray-700">{t('auth.phone')}</label>
+          <input
+            type="tel"
+            className="w-full rounded-md border px-3 py-2"
+            {...register('phone_number', { required: true })}
+          />
+          {errors.phone_number && <p className="mt-1 text-xs text-red-500">{t('auth.phoneRequired')}</p>}
         </div>
         <div>
           <label className="mb-1 block text-sm font-medium text-gray-700">{t('auth.name')}</label>
@@ -55,12 +99,17 @@ export const RegisterPage = () => {
         >
           {isSubmitting ? t('app.loading') : t('auth.register')}
         </button>
-        {isSubmitSuccessful && (
-          <p className="text-sm text-emerald-600">
-            {t('auth.volunteerPending')}
-          </p>
+        {serverError && <p className="text-sm text-red-500">{serverError}</p>}
+        {success && (
+          <p className="text-sm text-emerald-600">{t('auth.registerSuccess')}</p>
         )}
       </form>
+      <p className="mt-4 text-center text-sm text-gray-600">
+        {t('auth.haveAccount')}{' '}
+        <Link to="/login" className="text-accent hover:underline">
+          {t('auth.login')}
+        </Link>
+      </p>
     </div>
   );
 };

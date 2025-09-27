@@ -25,6 +25,7 @@ class User(Base):
     id = Column(Integer, primary_key=True, index=True)
     email = Column(String, unique=True, index=True, nullable=False)
     hashed_password = Column(String, nullable=False)
+    phone_number = Column(String, nullable=True)
     full_name = Column(String, nullable=True)
     role = Column(SQLEnum(UserRole), default=UserRole.volunteer, nullable=False)
     volunteer_status = Column(SQLEnum(VolunteerStatus), default=VolunteerStatus.pending, nullable=False)

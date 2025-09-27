@@ -9,10 +9,13 @@ from app.models.user import UserRole, VolunteerStatus
 class UserBase(BaseModel):
     email: EmailStr
     full_name: Optional[str]
+    phone_number: Optional[str]
 
 
 class UserCreate(UserBase):
     password: str
+    password_confirm: str
+    phone_number: str
     iin: Optional[str]
 
 
