@@ -6,3 +6,10 @@ volumes/
 *.sqlite3
 .idea/
 .vscode/
+codex/create-backend-for-civil-oversight-platform
+node_modules/
+frontend/node_modules/
+frontend/dist/
+nginx/certs/*.crt
+nginx/certs/*.key
+CODEXX

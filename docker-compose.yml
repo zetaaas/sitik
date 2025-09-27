@@ -67,6 +67,29 @@ services:
       - backend
     command: celery -A app.celery_app.celery_app worker --loglevel=info
 
+ codex/create-backend-for-civil-oversight-platform
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      - NODE_ENV=production
+    depends_on:
+      - backend
+    ports:
+      - "4173:4173"
+
+  nginx:
+    build:
+      context: ./nginx
+    depends_on:
+      - backend
+      - frontend
+    ports:
+      - "80:80"
+      - "443:443"
+
+
+ CODEXX
 volumes:
   postgres_data:
   minio_data:

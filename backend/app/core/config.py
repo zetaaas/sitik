@@ -24,6 +24,11 @@ class Settings(BaseSettings):
 
     rate_limit_default: str = "30/minute"
 
+ codex/create-backend-for-civil-oversight-platform
+    twofa_code_ttl_seconds: int = 300
+
+
+CODEXX
     clamav_enabled: bool = False
     thumbnail_sizes: List[int] = [256]
 

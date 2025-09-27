@@ -9,10 +9,19 @@ from app.models.user import UserRole, VolunteerStatus
 class UserBase(BaseModel):
     email: EmailStr
     full_name: Optional[str]
+ codex/create-backend-for-civil-oversight-platform
+    phone_number: Optional[str]
+
+ CODEXX
 
 
 class UserCreate(UserBase):
     password: str
+codex/create-backend-for-civil-oversight-platform
+    password_confirm: str
+    phone_number: str
+
+CODEXX
     iin: Optional[str]
 
 
